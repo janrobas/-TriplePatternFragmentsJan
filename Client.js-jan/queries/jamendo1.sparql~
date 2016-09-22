@@ -1,0 +1,4 @@
+
+
+SELECT ?name
+WHERE { ?art http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://purl.org/ontology/mo/MusicArtist. ?art http://xmlns.com/foaf/0.1/name ?name.  }

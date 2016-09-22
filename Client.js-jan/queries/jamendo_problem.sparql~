@@ -1,0 +1,1 @@
+SELECT ?aaa WHERE { ?album <http://www.holygoat.co.uk/owl/redwood/0.1/tags/taggedWithTag> <http://dbtune.org/jamendo/tag/rock>. ?album <http://xmlns.com/foaf/0.1/name> ?aaa.  }

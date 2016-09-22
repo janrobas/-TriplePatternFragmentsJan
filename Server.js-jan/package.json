@@ -1,0 +1,53 @@
+{
+  "name": "ldf-server",
+  "description": "Linked Data Fragments Server",
+  "version": "1.1.6",
+  "license": "MIT",
+  "bin": {
+    "ldf-server": "./bin/ldf-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:LinkedDataFragments/Server.js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LinkedDataFragments/Server.js/issues"
+  },
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha",
+    "hint": "./node_modules/jshint/bin/jshint bin/* lib test"
+  },
+  "dependencies": {
+    "base64-arraybuffer": "0.1.2",
+    "bloem": "0.2.4",
+    "hdt": "^1.2.4",
+    "jsonld": "^0.3.0",
+    "lodash": "^2.4.0",
+    "lru-cache": "^2.5.0",
+    "mariasql": "^0.2.5",
+    "mime": "^1.2.11",
+    "mysql": "^2.10.2",
+    "n3": "^0.4.0",
+    "negotiate": "^1.0.1",
+    "promise": "^7.1.1",
+    "qejs": "^3.0.0",
+    "request": "^2.27.0",
+    "uritemplate": "^0.3.0"
+  },
+  "optionalDependencies": {
+    "access-log": "^0.3.9"
+  },
+  "devDependencies": {
+    "chai": "^1.9.0",
+    "jshint": "^2.1.10",
+    "mocha": "^1.17.1",
+    "pre-commit": "^0.0.9",
+    "sinon": "1.10.3",
+    "sinon-chai": "^2.6.0",
+    "supertest": "^0.13.0"
+  },
+  "pre-commit": [
+    "hint",
+    "test"
+  ]
+}

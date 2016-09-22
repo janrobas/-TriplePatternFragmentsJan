@@ -1,0 +1,5 @@
+PREFIX dbpedia: <http://dbpedia.org/resource/>
+PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>
+
+SELECT ?b
+WHERE { ?b dbpedia-owl:birthPlace dbpedia:Nottingham. ?b dbpedia-owl:instrument dbpedia:Sitar  }
