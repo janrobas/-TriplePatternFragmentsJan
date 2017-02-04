@@ -10,7 +10,7 @@ function PredicateFilter(datasource, query, variable, totalCount, callback) {
     return callback(null, null);
   }*/
 
-  if(variable != "object" && variable != "subject"/* && variable != "object subject"*/) {
+  if(variable != "object" && variable != "subject" && variable != "object subject") {
     return callback(null, null);
   } else {
     if(cache) {
