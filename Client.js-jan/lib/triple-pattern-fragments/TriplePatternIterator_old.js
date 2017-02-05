@@ -43,78 +43,50 @@ TriplePatternIterator.prototype._createTransformer = function (bindings, options
 TriplePatternIterator.prototype._createTransformer = function (bindings, options) {
   var boundPattern = rdf.applyBindings(bindings, this._pattern);
   var fragment;
-
-  this._bpattern = bindings._pattern;
+  var self = this;
 
   if(!rdf.hasVariables(boundPattern)) {
-    this._filter = bindings._filter;
-    this._rsource = this._source;
-    this._rpattern = boundPattern;
-
-    while(this._rpattern && !rdf.hasVariables(this._rpattern) && (typeof this._rsource !== "undefined") && (!this._filter || this._filter == "")) {
-      this._rpattern = this._rsource._pattern;
-      this._bpattern = this._rsource._bpattern;
-      this._filter = this._rsource._filter;
-      this._rsource = this._rsource._source;
-    }
-
     fragment = new Iterator.PassthroughIterator();
-    var obstaja = true;
+    var exists = true;
 
-    var pfilter = true;
-    if(args.z) { pfilter = false; }
-
-
-    if(this._bpattern && this._filter && pfilter/* && _.contains(predicates, boundPattern["predicate"])*/) {
-
-      var filterFields = this._filter.split(',');
+    if(bindings.filter/* && _.contains(predicates, boundPattern["predicate"])*/) {
+      var filterFields = bindings.filter.split(',');
 
       var filterStr = new Buffer(filterFields[2], 'base64');
 
-      // filterFields[1,2] = m, k
       var bloomFilter =  new BloomFilter(filterFields[0], filterFields[1], filterStr);
 
-
-
-      if(!rdf.isVariable(this._bpattern.predicate) && (!rdf.isVariable(this._bpattern.subject) || !rdf.isVariable(this._bpattern.object))) {
-
+      if(!rdf.isVariable(bindings._pattern.predicate) && (!rdf.isVariable(bindings._pattern.subject) || !rdf.isVariable(bindings._pattern.object))) {
         var testStr = boundPattern.subject + "|" + boundPattern.predicate + "|" + boundPattern.object;
 
         if(filterFields[0] == 0) {
-          obstaja = false;
+          exists = false;
         } else {
-          obstaja = bloomFilter.has(Buffer(testStr));
+          exists = bloomFilter.has(Buffer(testStr));
         }
-      } else if(!rdf.isVariable(this._bpattern.predicate)) {
+      } else if(!rdf.isVariable(bindings._pattern.predicate)) { // if the only variable is predicate
         var parent = rdf.removeBindings(bindings, this._pattern);
 
-        if(parent["subject"] != this._bpattern.object && parent["object"] != this._bpattern.object) {
-
+        // if we are testing membership of triple, linked with the object, then we have to make the membership query, because we don't have data about the object ("Jan 2" extension)
+        if(parent["subject"] != bindings._pattern.object && parent["object"] != bindings._pattern.object) {
           var testStr = boundPattern.subject + "|" + boundPattern.predicate + "|" + boundPattern.object;
 
           if(filterFields[0] == 0) {
-            obstaja = false;
+            exists = false;
           } else {
-            obstaja = bloomFilter.has(Buffer(testStr));
+            exists = bloomFilter.has(Buffer(testStr));
           }
         }
       }
-
     }
 
-    if (obstaja) {
-      fragment.setSource(this._client.getFragmentByPattern(boundPattern));
+    if (exists) {
+      fragment.setSource(self._client.getFragmentByPattern(boundPattern));
     } else {
-    /*  if(typeof global.reseno === "undefined")  {
-        global.reseno=0;
-      }
-      global.reseno++;
-
-      console.log(global.reseno);*/
       fragment.setSource(Iterator.empty());
     }
   } else {
-    fragment = this._client.getFragmentByPattern(boundPattern);
+    fragment = self._client.getFragmentByPattern(boundPattern);
   }
 
   Logger.logFragment(this, fragment, bindings);
@@ -147,7 +119,7 @@ TriplePatternIterator.prototype._readTransformer = function (fragment, fragmentB
     // Extend the bindings such that they bind the iterator's pattern to the triple
     try {
        var r = rdf.extendBindings(fragmentBindings, this._pattern, triple);
-       r._filter = triple.filter;
+       r.filter = triple.filter;
        r._pattern = this._pattern;
        return r;
      }
